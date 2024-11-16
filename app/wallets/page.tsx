@@ -1,13 +1,50 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TbBrandTorchain } from "react-icons/tb";
 import { SiSolana } from "react-icons/si";
 import { LiaEthereum } from "react-icons/lia";
+import { redirect } from "next/navigation";
+import CryptoJS from "crypto-js";
+import { useMnemonic } from "@/contexts/MnemonicContext";
 import SecretPhrase from "@/components/SecretPhrase";
 import SolanaWallet from "@/components/SolanaWallet";
+import EthereumWallet from "@/components/EthereumWallet";
 
 const SolWallet = () => {
-  const [selectWallet, setSelectWallet] = useState("")
+  const [selectWallet, setSelectWallet] = useState("");
+  const { mnemonic, setMnemonic } = useMnemonic();
+
+  const decryptData = (encryptedData: string, key: string): string | null => {
+      try {
+        const bytes = CryptoJS.AES.decrypt(encryptedData, key);
+        const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+        return decrypted || null;
+      } catch (error) {
+        console.error("Decryption failed:", error);
+        return null;
+      }
+    };
+  useEffect(() => {
+    const encryptedMnemonic = localStorage.getItem("encryptedMnemonic");
+
+    if (encryptedMnemonic) {
+      const decryptedMnemonic = decryptData(
+        encryptedMnemonic,
+        process.env.NEXT_PUBLIC_ENCRYPTION_KEY || ""
+      );
+
+      if (decryptedMnemonic) {
+        setMnemonic(decryptedMnemonic);
+      } else {
+        console.error("Failed to decrypt mnemonic.");
+        redirect("/");
+      }
+    } else if (!mnemonic) {
+      console.error("Mnemonic is not available.");
+      redirect("/");
+    }
+  }, [mnemonic, setMnemonic]);
+
   return (
     <div className="min-h-screen text-white px-10 pb-10">
       <header className="flex items-center justify-between py-10">
@@ -27,13 +64,13 @@ const SolWallet = () => {
           onClick={() => setSelectWallet("solana")}
           className="bg-neutral-800 hover:bg-neutral-900 text-white py-2 px-4 rounded flex gap-4 items-center">
             <SiSolana className="text-cyan-500 text-xl"/>
-            <p>Solana</p>
+            <p className="select-none">Solana</p>
           </div>
           <div
           onClick={() => setSelectWallet("ethereum")}
           className="bg-neutral-800 hover:bg-neutral-900 text-white py-2 px-4 rounded flex gap-2 items-center">
             <LiaEthereum className="text-cyan-500 text-2xl"/>
-            <p>Ethereum</p>
+            <p className="select-none">Ethereum</p>
           </div>
         </div>
       </div>
@@ -42,32 +79,7 @@ const SolWallet = () => {
         selectWallet === "solana" ?
         <SolanaWallet />
         : selectWallet === "ethereum" ?
-        <>
-        <div className="pb-4 mt-10">
-        <div className="flex justify-between items-center px-4">
-          <h2 className="text-4xl font-bold">Ethereum Wallet</h2>
-          <div className="flex space-x-2">
-            <button
-              // onClick={handleAddWallet}
-              className="bg-slate-200 hover:bg-slate-300 text-black py-2 px-4 rounded"
-            >
-              Add Wallet
-            </button>
-            <button
-              // onClick={clearWallets}
-              className="bg-rose-800 hover:bg-rose-900 text-white py-2 px-4 rounded"
-            >
-              Clear Wallets
-            </button>
-          </div>
-        </div>
-        <div className="p-8 mt-6 rounded-lg border border-zinc-800 flex justify-center">
-          <p className=" text-stone-300">
-            The Ethereum wallet is currently under development.
-          </p>
-        </div>
-    </div>
-        </>
+        <EthereumWallet />
         : null
       }
     </div>

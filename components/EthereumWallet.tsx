@@ -1,19 +1,16 @@
 "use client";
-
-// components/CreateWallet.tsx
 import React, { useState } from "react";
 import { useMnemonic } from "@/contexts/MnemonicContext";
-import { deriveSolWallet } from "@/lib";
+import { deriveEthWallet } from "@/lib";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { redirect } from "next/navigation";
 
 interface Wallet {
-  pubKey: string;
-  secret: string;
-}
-
-const SolanaWallet = () => {
-  const { mnemonic } = useMnemonic();
+    address: string;
+    privateKey: string;
+  }
+const EthereumWallet = () => {
+    const { mnemonic } = useMnemonic();
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [showPrivateKey, setShowPrivateKey] = useState(false);
    
@@ -22,9 +19,10 @@ const SolanaWallet = () => {
       setShowPrivateKey((prev) => !prev);
     };
 
+    
   const handleAddWallet = () => {
     if (mnemonic) {
-      const newWallet = deriveSolWallet(mnemonic, wallets.length); // Derive a new wallet with incremented index
+      const newWallet = deriveEthWallet(mnemonic, wallets.length); // Derive a new wallet with incremented index
       setWallets([...wallets, newWallet]);
     }else {
       console.error("Mnemonic is not available.");
@@ -37,10 +35,10 @@ const SolanaWallet = () => {
   }
   return (
     <>
-    {/* Solana Wallet Section */}
+    {/* Ethereum Wallet Section */}
     <div className="pb-4 mt-10">
         <div className="flex justify-between items-center px-4">
-          <h2 className="text-4xl font-bold">Solana Wallet</h2>
+          <h2 className="text-4xl font-bold">Ethereum Wallet</h2>
           <div className="flex space-x-2">
             <button
               onClick={handleAddWallet}
@@ -74,7 +72,7 @@ const SolanaWallet = () => {
               <div className="rounded-lg border border-zinc-800 bg-zinc-900">
                 <div className="mt-4 p-4 ">
                   <h4 className="text-lg font-medium">Public Key</h4>
-                  <p className="truncate">{wallet.pubKey}</p>
+                  <p className="truncate">{wallet.address}</p>
                 </div>
 
                 <div className="mt-4 p-4 ">
@@ -82,7 +80,7 @@ const SolanaWallet = () => {
                   <div className="flex items-center justify-between">
                     <p className="truncate">
                       {showPrivateKey ? (
-                        wallet.secret
+                        wallet.privateKey
                       ) : (
                         <span className="text-lg tracking-widest">
                           ••••••••••••••••••••••••••••••••••••
@@ -103,7 +101,7 @@ const SolanaWallet = () => {
           ))}
         </div>
     </>
-  );
-};
+  )
+}
 
-export default SolanaWallet;
+export default EthereumWallet

@@ -4,14 +4,42 @@ import { useMnemonic } from "@/contexts/MnemonicContext";
 import { generateMnemonic } from "bip39";
 import { redirect } from "next/navigation";
 import { TbBrandTorchain } from "react-icons/tb";
+import CryptoJS from "crypto-js";
+
 
 const CreateSecretPhrase = () => {
   const { setMnemonic } = useMnemonic();
 
-  const handleGenerate = () => {
-    const mnemonic = generateMnemonic();
-    setMnemonic(mnemonic); // Store in context
-    console.log("Generated Mnemonic:", mnemonic);
+  // Function to encrypt data
+  const encryptData = (data: string) => {
+    return CryptoJS.AES.encrypt(data, process.env.NEXT_PUBLIC_ENCRYPTION_KEY || "").toString();
+  };
+
+  // Function to decrypt data
+  const decryptData = (encryptedData: string) => {
+    const bytes = CryptoJS.AES.decrypt(encryptedData, process.env.NEXT_PUBLIC_ENCRYPTION_KEY || "");
+    return bytes.toString(CryptoJS.enc.Utf8);
+  };
+
+  // Function to handle mnemonic setup
+  const handleMnemonicSetup = () => {
+    const encryptedMnemonic = localStorage.getItem("encryptedMnemonic");
+
+    if (encryptedMnemonic) {
+      // Decrypt and set the mnemonic from localStorage
+      const decryptedMnemonic = decryptData(encryptedMnemonic);
+      if (decryptedMnemonic) {
+        setMnemonic(decryptedMnemonic); // Set in context
+        redirect("/wallets"); // Navigate to next page
+        return;
+      }
+    }
+
+    // Generate new mnemonic if none exists
+    const newMnemonic = generateMnemonic();
+    const encryptedNewMnemonic = encryptData(newMnemonic);
+    localStorage.setItem("encryptedMnemonic", encryptedNewMnemonic); // Save encrypted mnemonic
+    setMnemonic(newMnemonic); // Set in context
     redirect("/wallets"); // Navigate to next page
   };
 
@@ -30,7 +58,7 @@ const CreateSecretPhrase = () => {
         a safe place.
       </p>
       <button
-        onClick={handleGenerate}
+        onClick={handleMnemonicSetup}
         className="bg-slate-200 hover:bg-slate-300 text-black mt-10 py-2 px-8 rounded"
       >
         Create
