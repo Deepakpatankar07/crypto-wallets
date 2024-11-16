@@ -1,10 +1,8 @@
 "use client"
-import React, { useState } from "react";
-import SecretPhrase from "@/components/SecretPhrase";
-import SolanaWallet from "@/components/SolanaWallet";
-import LandingPage from "@/components/LandingPage";
 import CreateSecretePhrase from "@/components/CreateSecretePhrase";
+import LandingPage from "@/components/LandingPage";
 import SecretRecoveryWarning from "@/components/SecretRecoveryWarning";
+import { useState } from "react";
 
 // Define a type for slide components that accept props
 type SlideProps = {
@@ -18,7 +16,7 @@ const Home = () => {
   const slides = [
     (props: SlideProps) => <LandingPage {...props} />,
     (props: SlideProps) => <SecretRecoveryWarning {...props} />,
-    (props: SlideProps) => <CreateSecretePhrase/>,
+    () => <CreateSecretePhrase/>,
   ];
 
   const goToNextSlide = () => {

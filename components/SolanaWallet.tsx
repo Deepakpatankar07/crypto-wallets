@@ -1,11 +1,11 @@
 "use client";
 
 // components/CreateWallet.tsx
-import React, { useState } from "react";
 import { useMnemonic } from "@/contexts/MnemonicContext";
 import { deriveSolWallet } from "@/lib";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { redirect } from "next/navigation";
+import { useState } from "react";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 interface Wallet {
   pubKey: string;

@@ -1,5 +1,5 @@
-import React from 'react'
-import { TbBrandTorchain } from 'react-icons/tb'
+import React from 'react';
+import { TbBrandTorchain } from 'react-icons/tb';
 interface LandingPageProps {
     goToNextSlide: () => void;
   }

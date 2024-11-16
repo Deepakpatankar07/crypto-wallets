@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from "react";
 import { useMnemonic } from "@/contexts/MnemonicContext";
 import { deriveEthWallet } from "@/lib";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { redirect } from "next/navigation";
+import { useState } from "react";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 interface Wallet {
     address: string;

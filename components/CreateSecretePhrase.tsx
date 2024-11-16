@@ -1,10 +1,9 @@
 "use client";
-import React from "react";
 import { useMnemonic } from "@/contexts/MnemonicContext";
 import { generateMnemonic } from "bip39";
+import CryptoJS from "crypto-js";
 import { redirect } from "next/navigation";
 import { TbBrandTorchain } from "react-icons/tb";
-import CryptoJS from "crypto-js";
 
 
 const CreateSecretPhrase = () => {

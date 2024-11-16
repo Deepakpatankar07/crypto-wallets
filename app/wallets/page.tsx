@@ -1,14 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { TbBrandTorchain } from "react-icons/tb";
-import { SiSolana } from "react-icons/si";
-import { LiaEthereum } from "react-icons/lia";
-import { redirect } from "next/navigation";
-import CryptoJS from "crypto-js";
-import { useMnemonic } from "@/contexts/MnemonicContext";
+import EthereumWallet from "@/components/EthereumWallet";
 import SecretPhrase from "@/components/SecretPhrase";
 import SolanaWallet from "@/components/SolanaWallet";
-import EthereumWallet from "@/components/EthereumWallet";
+import { useMnemonic } from "@/contexts/MnemonicContext";
+import CryptoJS from "crypto-js";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import { LiaEthereum } from "react-icons/lia";
+import { SiSolana } from "react-icons/si";
+import { TbBrandTorchain } from "react-icons/tb";
 
 const SolWallet = () => {
   const [selectWallet, setSelectWallet] = useState("");
